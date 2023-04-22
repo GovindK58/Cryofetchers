@@ -1,13 +1,28 @@
+# Cryofetchers
+
+The repo contains analysis of different cache hierarchies and cache replacement policies, insights and improvements. 
+We are using champsim to run simulations. 
+
+The traces can be downloaded from https://utexas.app.box.com/s/2k54kp8zvrqdfaa8cdhfquvcxwh7yn85/folder/132804598561
+
+
+References:
+- https://seal.ece.ucsb.edu/sites/default/files/publications/hpca-2019-abanti.pdf
+- https://cs.stanford.edu/~matei/papers/2017/bigdata_making_caches_work.pdf
+- https://par.nsf.gov/servlets/purl/10080635
+- https://core.ac.uk/download/pdf/147122148.pdf
+
+
 <p align="center">
-  <h1 align="center"> ChampSim </h1>
+  <h2 align="center"> ChampSim </h2>
   <p> ChampSim is a trace-based simulator for a microarchitecture study. You can sign up to the public mailing list by sending an empty mail to champsim+subscribe@googlegroups.com. If you have questions about how to use ChampSim, you can often receive a quicker response on the mailing list. Please reserve GitHub Issues for bugs. <p>
 </p>
 
-# Using ChampSim
+## Using ChampSim
 
 ChampSim is the result of academic research. To support its continued growth, please cite our work when you publish results that use ChampSim by clicking "Cite this Repository" in the sidebar.
 
-# Compile
+## Compile
 
 ChampSim takes a JSON configuration script. Examine `champsim_config.json` for a fully-specified example. All options described in this file are optional and will be replaced with defaults if not specified. The configuration scrip can also be run without input, in which case an empty file is assumed.
 ```
@@ -15,13 +30,13 @@ $ ./config.sh <configuration file>
 $ make
 ```
 
-# Download DPC-3 trace
+## Download DPC-3 trace
 
 Traces used for the 3rd Data Prefetching Championship (DPC-3) can be found here. (https://dpc3.compas.cs.stonybrook.edu/champsim-traces/speccpu/) A set of traces used for the 2nd Cache Replacement Championship (CRC-2) can be found from this link. (http://bit.ly/2t2nkUj)
 
 Storage for these traces is kindly provided by Daniel Jimenez (Texas A&M University) and Mike Ferdman (Stony Brook University). If you find yourself frequently using ChampSim, it is highly encouraged that you maintain your own repository of traces, in case the links ever break.
 
-# Run simulation
+## Run simulation
 
 Execute the binary directly.
 ```
@@ -30,7 +45,7 @@ $ bin/champsim --warmup_instructions 200000000 --simulation_instructions 5000000
 
 The number of warmup and simulation instructions given will be the number of instructions retired. Note that the statistics printed at the end of the simulation include only the simulation phase.
 
-# Add your own branch predictor, data prefetchers, and replacement policy
+## Add your own branch predictor, data prefetchers, and replacement policy
 **Copy an empty template**
 ```
 $ mkdir prefetcher/mypref
@@ -59,12 +74,12 @@ $ make
 $ bin/champsim --warmup_instructions 200000000 --simulation_instructions 500000000 600.perlbench_s-210B.champsimtrace.xz
 ```
 
-# How to create traces
+## How to create traces
 
 Program traces are available in a variety of locations, however, many ChampSim users wish to trace their own programs for research purposes.
 Example tracing utilities are provided in the `tracer/` directory.
 
-# Evaluate Simulation
+## Evaluate Simulation
 
 ChampSim measures the IPC (Instruction Per Cycle) value as a performance metric. <br>
 There are some other useful metrics printed out at the end of simulation. <br>
