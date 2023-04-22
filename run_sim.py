@@ -1,3 +1,4 @@
+#!/usr/bin/python
 import json
 import os
 import matplotlib.pyplot as plt
@@ -8,12 +9,12 @@ to_run = int(sys.argv[1])
 
 NUM_INSTR = 1000000
 
-llc_repl = ["lru", "ship", "srrip"]
+llc_repl = ["lru", "lip", "eaf", "gippr"]
 
 sim_config = json.load(open('champsim_config.json'))
 TRACES = os.listdir("gap_traces")
 
-out_file = open("results/repl/llc_repl.csv", "w")
+out_file = open("results/repl/llc_repl.csv", "a")
 
 data = np.zeros((2, len(llc_repl), len(TRACES)))
 
@@ -41,16 +42,16 @@ for j, repl in enumerate(llc_repl):
         data[0][j][i] = ipc
         data[1][j][i] = llc_hit
         
-ind = np.arange(len(llc_repl))
-width = 0.2
+ind = np.arange(len(TRACES))
+width = 0.1
 
 # print(ind)
 # print(data[0])
 
-for i in range(len(TRACES)):
-    plt.bar(ind + width*i, data[0][:,i], width, label=TRACES[i])
+for i in range(len(llc_repl)):
+    plt.bar(ind + width*i, data[0][i,:], width, label=llc_repl[i])
 
-plt.xticks(ind+ width*len(TRACES)/4 , llc_repl)
+plt.xticks(ind+ width*len(llc_repl)/4 , TRACES)
 plt.legend()
 plt.title("Effect on IPC with different LLC replacement policies")
 plt.show()
