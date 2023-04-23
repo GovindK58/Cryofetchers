@@ -13,9 +13,9 @@ CPU 0 runs gap_traces/bfs-3.trace.gz
 CPU 0 Bimodal branch predictor
 Basic BTB sets: 1024 ways: 8 indirect buffer size: 4096 RAS size: 64
 
-Warmup complete CPU 0 instructions: 1000003 cycles: 250200 (Simulation time: 0 hr 0 min 2 sec) 
+Warmup complete CPU 0 instructions: 1000003 cycles: 250200 (Simulation time: 0 hr 0 min 3 sec) 
 
-Finished CPU 0 instructions: 1000000 cycles: 2901143 cumulative IPC: 0.344692 (Simulation time: 0 hr 0 min 5 sec) 
+Finished CPU 0 instructions: 1000000 cycles: 2901143 cumulative IPC: 0.344692 (Simulation time: 0 hr 0 min 6 sec) 
 
 ChampSim completed all CPUs
 
