@@ -1,0 +1,8 @@
+cc-6.trace,inclusive,lru,0.283972,0.5864629378255775
+bfs-3.trace,inclusive,lru,0.329887,0.25703469539085977
+cc-6.trace,inclusive,lip,0.187771,0.20339787285752312
+bfs-3.trace,inclusive,lip,0.319753,0.20965107646622122
+cc-6.trace,non_inclusive,lru,0.283981,0.5864313561681983
+bfs-3.trace,non_inclusive,lru,0.329887,0.25703469539085977
+cc-6.trace,non_inclusive,lip,0.296538,0.20839811570324646
+bfs-3.trace,non_inclusive,lip,0.343637,0.22901299613628381

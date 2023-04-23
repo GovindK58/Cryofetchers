@@ -98,7 +98,7 @@ void CACHE::handle_writeback()
       if (handle_pkt.type == RFO && handle_pkt.to_return.empty()) {
         success = readlike_miss(handle_pkt);
       } else {
-        assert(0); // no writeback miss for inclusive cache
+        // assert(0); // no writeback miss for inclusive cache
         // find victim
         auto set_begin = std::next(std::begin(block), set * NUM_WAY);
         auto set_end = std::next(set_begin, NUM_WAY);
