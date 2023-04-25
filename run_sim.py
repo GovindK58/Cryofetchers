@@ -6,23 +6,22 @@ import numpy as np
 import sys
 
 to_run = int(sys.argv[1])
-
-NUM_INSTR = 1000000
-
+NUM_INSTR = 30000000
 
 cache_policy = ["inclusive" ,"non_inclusive"]
-llc_repl = ["lru", "lip"]
-# llc_repl = ["lru", "lip", "eaf", "gippr", "random", "fifo", "drrip", "srrip"]
+llc_repl = ["lru", "lip", "eaf", "gippr", "lfu", "fifo", "drrip", "hawkeye"]
 
-result_dir = "results/inc_exc"
+os.system("mkdir -p results/final")
+
+result_dir = "results/final"
 # llc_repl = [ ]
 
 sim_config = json.load(open('champsim_config.json'))
 TRACES = os.listdir("gap_traces")
 
-out_file = open(f"{result_dir}/llc_repl.csv", "a", buffering=10)
+out_file = open(f"{result_dir}/res.csv", "a", buffering=10)
 
-data = np.zeros((2, len(TRACES), len(llc_repl), 2))
+data = np.zeros((3, len(TRACES), len(llc_repl), len(cache_policy)))
 
 for k, policy in enumerate(cache_policy):
 
@@ -44,13 +43,16 @@ for k, policy in enumerate(cache_policy):
                 os.system(f"bin/champsim -warmup_instructions {NUM_INSTR} -simulation_instructions {NUM_INSTR} gap_traces/{trace} > {res_file}")
 
             llc_info = os.popen(f'grep "LLC TOTAL" {res_file}').read().split()
+            ipc = os.popen(f'grep "CPU 0 cumulative IPC" {res_file}').read().split()
+            mpki = int(llc_info[7])/int(ipc[6])*1000
             llc_hit = int(llc_info[5])/int(llc_info[3])
-
-            ipc = os.popen(f'grep "CPU 0 cumulative IPC" {res_file}').read().split()[4]
-
-            out_file.write(f"{trace[:-3]},{policy},{repl},{ipc},{llc_hit}\n")
+            ipc = ipc[4]
+            
+            if to_run:
+                out_file.write(f"{trace[:-3]},{policy},{repl},{ipc},{llc_hit},{mpki}\n")
             data[0][i][j][k] = ipc
             data[1][i][j][k] = llc_hit
+            data[2][i][j][k] = mpki
         
 ind = np.arange(len(llc_repl))
 width = 0.1
@@ -68,7 +70,9 @@ for i in range(len(TRACES)):
     plt.xticks(ind+ width*(len(llc_repl) - 1) /2 , llc_repl)
     plt.legend()
     plt.title("Effect on IPC with different LLC replacement policies")
-    plt.show()
+    # plt.show()
+    plt.savefig(f"{result_dir}/{TRACES[i][:-3]}_ipc.png")
+    plt.close()
 
     for k in range(len(cache_policy)):
         plt.bar(ind + width*k, data[1][i, :, k], width, label=cache_policy[k])
@@ -76,5 +80,18 @@ for i in range(len(TRACES)):
     plt.xticks(ind + width*(len(llc_repl) - 1) /2 , llc_repl)
     plt.legend()
     plt.title("Effect on hit rate with different LLC replacement policies")
-    plt.show()
+    # plt.show()
+    plt.savefig(f"{result_dir}/{TRACES[i][:-3]}_hit.png")
+    plt.close()
+
+
+    for k in range(len(cache_policy)):
+        plt.bar(ind + width*k, data[2][i, :, k], width, label=cache_policy[k])
+
+    plt.xticks(ind + width*(len(llc_repl) - 1) /2 , llc_repl)
+    plt.legend()
+    plt.title("Effect on MPKI with different LLC replacement policies")
+    # plt.show()
+    plt.savefig(f"{result_dir}/{TRACES[i][:-3]}_mpki.png")
+    plt.close()
 
