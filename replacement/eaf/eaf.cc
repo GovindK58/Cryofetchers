@@ -30,7 +30,7 @@ EAF *cache_eaf;
 // initialize replacement state
 void CACHE::initialize_replacement()
 {
-    cache_eaf = new EAF(NUM_WAY/2);
+    cache_eaf = new EAF(NUM_SET/2);
 }
 
 uint32_t CACHE::find_victim(uint32_t cpu, uint64_t instr_id, uint32_t set, const BLOCK *current_set, uint64_t ip, uint64_t full_addr, uint32_t type)
@@ -38,21 +38,7 @@ uint32_t CACHE::find_victim(uint32_t cpu, uint64_t instr_id, uint32_t set, const
 
     uint32_t way = std::distance(current_set, std::max_element(current_set, std::next(current_set, NUM_WAY), lru_comparator<BLOCK, BLOCK>()));
 
-    // LRU victim
-
-    // for (way=0; way<NUM_WAY; way++) {
-    //     if (block[set*NUM_WAY + way].lru == NUM_WAY-1) {
-
-    //         DP ( if (warmup_complete[cpu]) {
-    //         cout << "[" << NAME << "] " << __func__ << " instr_id: " << instr_id << " replace set: " << set << " way: " << way;
-    //         cout << hex << " address: " << (full_addr>>LOG2_BLOCK_SIZE) << " victim address: " << block[set*NUM_WAY + way].address << " data: " << block[set*NUM_WAY + way].data;
-    //         cout << dec << " lru: " << block[set*NUM_WAY + way].lru << endl; });
-
-    //         break;
-    //     }
-    // }
     cache_eaf->insert(block[set*NUM_WAY + way].address);
-
 
     if (way == NUM_WAY) {
         cerr << "[" << NAME << "] " << __func__ << " no victim! set: " << set << endl;
