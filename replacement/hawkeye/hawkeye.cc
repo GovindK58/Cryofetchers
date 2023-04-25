@@ -7,6 +7,8 @@
 
 //3-bit RRIP counter
 #define MAXRRIP 7
+#define LLC_SET 2048
+#define LLC_WAY 16
 uint32_t rrip[LLC_SET][LLC_WAY];
 
 #include "hawkeye_predictor.h"

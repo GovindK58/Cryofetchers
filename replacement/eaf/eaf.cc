@@ -30,7 +30,7 @@ EAF *cache_eaf;
 // initialize replacement state
 void CACHE::initialize_replacement()
 {
-    cache_eaf = new EAF(NUM_SET/2);
+    cache_eaf = new EAF(NUM_SET);
 }
 
 uint32_t CACHE::find_victim(uint32_t cpu, uint64_t instr_id, uint32_t set, const BLOCK *current_set, uint64_t ip, uint64_t full_addr, uint32_t type)
@@ -67,7 +67,7 @@ void CACHE::update_replacement_state(uint32_t cpu, uint32_t set, uint32_t way, u
             block[set*NUM_WAY + way].lru = 0; // promote to the MRU position
         }
         else{
-            if (rand() % 4 == 0){
+            if (rand() % 3 == 0){
                 // update lru replacement state
                 for (uint32_t i=0; i<NUM_WAY; i++) {
                     if (block[set*NUM_WAY + i].lru < block[set*NUM_WAY + way].lru) {
