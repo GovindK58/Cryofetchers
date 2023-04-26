@@ -6,20 +6,20 @@ import numpy as np
 import sys
 
 to_run = int(sys.argv[1])
+
 NUM_INSTR = 30000000
 
+
 cache_policy = ["inclusive" ,"non_inclusive"]
-llc_repl = ["lru", "lip", "eaf", "gippr", "lfu", "fifo", "drrip", "hawkeye"]
+llc_repl = ["lru", "lip", "eaf", "gippr", "random", "fifo", "drrip", "srrip", "ship", "hawkeye", "lfu"]
 
-os.system("mkdir -p results/final")
-
-result_dir = "results/final"
+result_dir = "results/inc_exc"
 # llc_repl = [ ]
 
 sim_config = json.load(open('champsim_config.json'))
 TRACES = os.listdir("gap_traces")
 
-out_file = open(f"{result_dir}/res.csv", "a", buffering=10)
+out_file = open(f"{result_dir}/llc_repl.csv", "a", buffering=10)
 
 data = np.zeros((3, len(TRACES), len(llc_repl), len(cache_policy)))
 
@@ -71,7 +71,7 @@ for i in range(len(TRACES)):
     plt.legend()
     plt.title("Effect on IPC with different LLC replacement policies")
     # plt.show()
-    plt.savefig(f"{result_dir}/{TRACES[i][:-3]}_ipc.png")
+    plt.savefig(f"{result_dir}/pics/{TRACES[i][:-3]}_ipc.png")
     plt.close()
 
     for k in range(len(cache_policy)):
@@ -81,7 +81,7 @@ for i in range(len(TRACES)):
     plt.legend()
     plt.title("Effect on hit rate with different LLC replacement policies")
     # plt.show()
-    plt.savefig(f"{result_dir}/{TRACES[i][:-3]}_hit.png")
+    plt.savefig(f"{result_dir}/pics/{TRACES[i][:-3]}_hit.png")
     plt.close()
 
 
@@ -92,6 +92,5 @@ for i in range(len(TRACES)):
     plt.legend()
     plt.title("Effect on MPKI with different LLC replacement policies")
     # plt.show()
-    plt.savefig(f"{result_dir}/{TRACES[i][:-3]}_mpki.png")
+    plt.savefig(f"{result_dir}/pics/{TRACES[i][:-3]}_mpki.png")
     plt.close()
-
