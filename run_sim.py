@@ -55,7 +55,7 @@ for k, policy in enumerate(cache_policy):
             data[2][i][j][k] = mpki
         
 ind = np.arange(len(llc_repl))
-width = 0.1
+width = 0.2
 
 # print(ind)
 # print(data[0])
@@ -63,34 +63,43 @@ width = 0.1
 for i in range(len(TRACES)):
     data[0][i] = data[0][i]/data[0][i][0][0]
     data[1][i] = data[1][i]/data[1][i][0][0]
-
+    
+    plt.figure(figsize=(8, 6))
     for k in range(len(cache_policy)):
         plt.bar(ind + width*k, data[0][i, :, k], width, label=cache_policy[k])
 
-    plt.xticks(ind+ width*(len(llc_repl) - 1) /2 , llc_repl)
-    plt.legend(loc = 'lower right')
+    plt.xticks(rotation=45)
+    plt.xticks(ind - 0.8 + width*(len(llc_repl) - 1) /2 , llc_repl)
+    plt.legend(loc='upper left', bbox_to_anchor=(1, 1))
     plt.title("Effect on IPC with different LLC replacement policies")
-    # plt.show()
+    plt.subplots_adjust(bottom=0.15, right=0.8)
+    #plt.show()
     plt.savefig(f"{result_dir}/pics/{TRACES[i][:-3]}_ipc.png")
     plt.close()
 
+    plt.figure(figsize=(8, 6))
     for k in range(len(cache_policy)):
         plt.bar(ind + width*k, data[1][i, :, k], width, label=cache_policy[k])
 
-    plt.xticks(ind + width*(len(llc_repl) - 1) /2 , llc_repl)
-    plt.legend(loc = 'lower right')
+    plt.xticks(rotation=45)
+    plt.xticks(ind - 0.8 + width*(len(llc_repl) - 1) /2 , llc_repl)
+    plt.legend(loc='upper left', bbox_to_anchor=(1, 1))
     plt.title("Effect on hit rate with different LLC replacement policies")
+    plt.subplots_adjust(bottom=0.15, right=0.8)
     # plt.show()
     plt.savefig(f"{result_dir}/pics/{TRACES[i][:-3]}_hit.png")
     plt.close()
 
-
+    plt.figure(figsize=(8, 6))
     for k in range(len(cache_policy)):
         plt.bar(ind + width*k, data[2][i, :, k], width, label=cache_policy[k])
 
-    plt.xticks(ind + width*(len(llc_repl) - 1) /2 , llc_repl)
-    plt.legend(loc = 'lower right')
+    plt.xticks(rotation=45)
+    plt.xticks(ind - 0.8 + width*(len(llc_repl) - 1) /2 , llc_repl)
+
+    plt.legend(loc='upper left', bbox_to_anchor=(1, 1))
     plt.title("Effect on MPKI with different LLC replacement policies")
+    plt.subplots_adjust(bottom=0.15, right=0.8)
     # plt.show()
     plt.savefig(f"{result_dir}/pics/{TRACES[i][:-3]}_mpki.png")
     plt.close()
