@@ -215,24 +215,6 @@ void CACHE::readlike_hit(std::size_t set, std::size_t way, PACKET& handle_pkt)
     pf_useful++;
     hit_block.prefetch = 0;
   }
-
-  // if higher level there, add to WQ
-  if(higher_level){
-
-    PACKET writeback_packet;
-    writeback_packet.fill_level = higher_level->fill_level;
-    writeback_packet.cpu = handle_pkt.cpu;
-    writeback_packet.address = hit_block.address;
-    writeback_packet.data = hit_block.data;
-    writeback_packet.instr_id = handle_pkt.instr_id;
-    writeback_packet.ip = 0;
-    writeback_packet.is_dirty = hit_block.dirty;
-    writeback_packet.type = WRITEBACK;
-
-    auto result = higher_level->add_wq(&writeback_packet);
-    if (result != -2)
-      hit_block.valid = 0;
-  }
 }
 
 bool CACHE::readlike_miss(PACKET& handle_pkt)
@@ -321,7 +303,6 @@ bool CACHE::filllike_miss(std::size_t set, std::size_t way, PACKET& handle_pkt)
     std::cout << " type: " << +handle_pkt.type;
     std::cout << " cycle: " << current_cycle << std::endl;
   });
-  if(handle_pkt.type == LOAD) if(higher_level) way = NUM_WAY; // LLC or L2 bypass
 
   bool bypass = (way == NUM_WAY);
 #ifndef LLC_BYPASS
@@ -330,11 +311,7 @@ bool CACHE::filllike_miss(std::size_t set, std::size_t way, PACKET& handle_pkt)
   assert(handle_pkt.type != WRITEBACK || !bypass);
 
   BLOCK& fill_block = block[set * NUM_WAY + way];
-  bool evicting_dirty = !bypass && (lower_level != NULL);
-  if(((CACHE*)lower_level)->higher_level != this){
-    // if not L1i or L1d or L2 
-    evicting_dirty = fill_block.dirty && evicting_dirty;
-  }
+  bool evicting_dirty = !bypass && (lower_level != NULL) && fill_block.dirty;
   uint64_t evicting_address = 0;
 
   if (!bypass) {
@@ -348,10 +325,6 @@ bool CACHE::filllike_miss(std::size_t set, std::size_t way, PACKET& handle_pkt)
       writeback_packet.instr_id = handle_pkt.instr_id;
       writeback_packet.ip = 0;
       writeback_packet.type = WRITEBACK;
-      if(((CACHE*)lower_level)->higher_level == this){
-        // if L1i or L1d or L2 in case of copy back
-        writeback_packet.is_dirty = fill_block.dirty;
-      }
 
       auto result = lower_level->add_wq(&writeback_packet);
       if (result == -2)
@@ -371,8 +344,7 @@ bool CACHE::filllike_miss(std::size_t set, std::size_t way, PACKET& handle_pkt)
 
     fill_block.valid = true;
     fill_block.prefetch = (handle_pkt.type == PREFETCH && handle_pkt.pf_origin_level == fill_level);
-    // while writing the data check for the extra info .is_dirty which is set in case of copy back
-    fill_block.dirty = handle_pkt.is_dirty && ((handle_pkt.type == WRITEBACK) || (handle_pkt.type == RFO && handle_pkt.to_return.empty()));
+    fill_block.dirty = (handle_pkt.type == WRITEBACK || (handle_pkt.type == RFO && handle_pkt.to_return.empty()));
     fill_block.address = handle_pkt.address;
     fill_block.v_address = handle_pkt.v_address;
     fill_block.data = handle_pkt.data;
@@ -391,8 +363,7 @@ bool CACHE::filllike_miss(std::size_t set, std::size_t way, PACKET& handle_pkt)
                                  handle_pkt.type == PREFETCH, evicting_address, handle_pkt.pf_metadata);
 
   // update replacement policy
-  if (!bypass)
-    impl_replacement_update_state(handle_pkt.cpu, set, way, handle_pkt.address, handle_pkt.ip, 0, handle_pkt.type, 0);
+  impl_replacement_update_state(handle_pkt.cpu, set, way, handle_pkt.address, handle_pkt.ip, 0, handle_pkt.type, 0);
 
   // COLLECT STATS
   sim_miss[handle_pkt.cpu][handle_pkt.type]++;
