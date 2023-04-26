@@ -9,7 +9,7 @@ to_run = int(sys.argv[1])
 
 NUM_INSTR = 30000000
 
-sizes = [1024/4, 1024, 4096, 1024*16]
+sizes = [1024/4, 1024/2, 1024, 1024*2]
 result_dir = "results/l2_size"
 # llc_repl = [ ]
 
@@ -54,23 +54,23 @@ ind = np.arange(len(sizes))
 width = 0.2
 
 for i in range(len(TRACES)):
-    data[0][i] = data[0][i]/data[0][i][1]
-    data[1][i] = data[1][i]/data[1][i][1]
+    data[0][i] = data[0][i]/data[0][i][2]
+    data[1][i] = data[1][i]/data[1][i][2]
 
 plt.figure(figsize=(8, 6))
 
-# for k in range(len(TRACES)):
-#     plt.bar(ind + width*k, data[1][k, :], width, label=TRACES[k])sizes = [str(x*8/1024)+"KB" for x in sizes]
+for k in range(len(TRACES)):
+    plt.bar(ind + width*k, data[1][k, :], width, label=TRACES[k])
 
-sizes = [str(x*8/1024)+"KB" for x in sizes]
+sizes = [str(x*8*64/1024)+"KB" for x in sizes]
 
-plt.bar(sizes, data[0][1, :], 0.4)
+# plt.bar(sizes, data[0][1, :], 0.4)
 
 
 # plt.xticks(rotation=45)
-plt.xticks(sizes)
-# plt.legend(loc='upper left', bbox_to_anchor=(1, 1))
-plt.title(f"Effect on IPC with different L2 sizes on {TRACES[1]}")
+plt.xticks(ind + width*(len(TRACES) - 1) /2 , sizes)
+plt.legend(loc='upper left', bbox_to_anchor=(1, 1))
+plt.title(f"Effect on IPC with different L2 sizes")
 plt.subplots_adjust(bottom=0.15, right=0.8)
 plt.show()
 # plt.savefig(f"{result_dir}/pics/{TRACES[i][:-3]}_ipc.png")
