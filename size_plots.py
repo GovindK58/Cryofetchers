@@ -5,6 +5,7 @@ import numpy as np
 import os
 
 llc_sets = [512, 2048, 8192, 32768]
+llc_sets = [str(x/1024)+"MB" for x in llc_sets]
 llc_repl = ["lru", "lip", "eaf", "hawkeye", "lfu"]
 TRACES = os.listdir("gap_traces")
 

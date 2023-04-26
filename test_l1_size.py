@@ -60,7 +60,7 @@ plt.figure(figsize=(8, 6))
 for k in range(len(TRACES)):
     plt.bar(ind + width*k, data[0][k, :], width, label=TRACES[k])
 
-sizes = [str(x*20/1024)+"KB" for x in sizes]
+sizes = [str(x*64*20/1024)+"KB" for x in sizes]
 
 
 # plt.xticks(rotation=45)
