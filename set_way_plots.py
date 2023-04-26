@@ -42,23 +42,27 @@ width = 0.1
 for i in range(len(TRACES)):
     data[0][i] = data[0][i]/data[0][i][0][2]
     data[1][i] = data[1][i]/data[1][i][0][2]
-
+    
+    plt.figure(figsize=(8, 6))
     for k in range(len(llc_sets)):
         plt.bar(ind + width*k, data[0][i, :, k], width, label=llc_sets[k])
 
-    plt.xticks(ind+ width*(len(llc_repl) - 1) /2 , llc_repl)
-    plt.legend()
-    plt.title("Effect on IPC with different LLC replacement policies")
+    plt.xticks(ind+ width*(len(llc_sets) - 1) /2 , llc_repl)
+    plt.legend(loc='upper left', bbox_to_anchor=(1, 1))
+    plt.title("Effect on IPC with different LLC sets")
+    plt.xlabel('LLC replacement policy')
     # plt.show()
     plt.savefig(f"results/llc_set_ways/pics/{TRACES[i][:-3]}_ipc.png")
     plt.close()
-
+    
+    plt.figure(figsize=(8, 6))
     for k in range(len(llc_sets)):
         plt.bar(ind + width*k, data[1][i, :, k], width, label=llc_sets[k])
 
-    plt.xticks(ind + width*(len(llc_repl) - 1) /2 , llc_repl)
-    plt.legend()
-    plt.title("Effect on hit rate with different LLC replacement policies")
+    plt.xticks(ind + width*(len(llc_sets) - 1) /2 , llc_repl)
+    plt.legend(loc='upper left', bbox_to_anchor=(1, 1))
+    plt.title("Effect on hit rate with different LLC sets")
+    plt.xlabel('LLC replacement policy')
     # plt.show()
     plt.savefig(f"results/llc_set_ways/pics/{TRACES[i][:-3]}_hit.png")
     plt.close()
