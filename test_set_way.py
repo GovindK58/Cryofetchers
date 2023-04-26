@@ -3,13 +3,14 @@ import os
 import matplotlib.pyplot as plt
 import numpy as np
 import sys
+from pwn import *
 
 llc_ways = [1, 4, 16, 64]
 iter = 30000000
 llc_repl = ["lru", "lip", "eaf", "gippr", "random", "fifo", "drrip", "srrip", "ship", "lfu"]
 
 to_run = int(sys.argv[1])
-
+curr_running = []
 sim_config = json.load(open('champsim_config.json'))
 TRACES = os.listdir("gap_traces")
 
@@ -35,22 +36,27 @@ for k, repl in enumerate(llc_repl):
             os.system("make")
         for i, trace in enumerate(TRACES):
             if to_run:
-                os.system(f"bin/champsim -warmup_instructions {iter} -simulation_instructions {iter} gap_traces/{trace} > results/llc_set_ways/{trace[:-3]}_{repl}_{way}.txt")
+                curr_running.append(process(argv=["./single_runner.sh", f"{iter}", f"{trace}", f"results/llc_set_ways/{trace[:-3]}_{repl}_{way}.txt"]))
 
-            llc_info = os.popen(f'grep "LLC TOTAL" results/llc_set_ways/{trace[:-3]}_{repl}_{way}.txt').read().split()
-            llc_hit = int(llc_info[5])/int(llc_info[3])
-            ipc = os.popen(f'grep "CPU 0 cumulative IPC" results/llc_set_ways/{trace[:-3]}_{repl}_{way}.txt').read().split()[4]
+            # llc_info = os.popen(f'grep "LLC TOTAL" results/llc_set_ways/{trace[:-3]}_{repl}_{way}.txt').read().split()
+            # llc_hit = int(llc_info[5])/int(llc_info[3])
+            # ipc = os.popen(f'grep "CPU 0 cumulative IPC" results/llc_set_ways/{trace[:-3]}_{repl}_{way}.txt').read().split()[4]
             # mpki = int(llc_info[7])/int(ipc[6])*1000
             # ipc = ipc[4]
 
-            if to_run:
-                out_file.write(f"{trace[:-3]},{repl},{way},{ipc},{llc_hit}\n")
-            data[0][i][k][j] = ipc
-            data[1][i][k][j] = llc_hit
-            # data[2][i][k][j] = mpki
-        
-ind = np.arange(len(llc_repl))
-width = 0.1
+            # if to_run:
+            #     out_file.write(f"{trace[:-3]},{repl},{way},{ipc},{llc_hit}\n")
+            # data[0][i][k][j] = ipc
+            # data[1][i][k][j] = llc_hit
+            # # data[2][i][k][j] = mpki
+
+
+for p in curr_running:
+    p.wait_for_close()
+
+
+# ind = np.arange(len(llc_repl))
+# width = 0.1
 
 # print(ind)
 # print(data[0])
