@@ -5,7 +5,8 @@ import numpy as np
 
 llc_sets = [1, 4, 16, 64]
 iter = 30000000
-llc_repl = ["lru", "lip", "eaf", "gippr", "random", "fifo", "drrip", "srrip", "ship", "hawkeye", "lfu"]
+# llc_repl = ["lru", "lip", "eaf", "gippr", "random", "fifo", "drrip", "srrip", "ship", "hawkeye", "lfu"]
+llc_repl = ["lfu"]
 
 sim_config = json.load(open('champsim_config.json'))
 TRACES = os.listdir("gap_traces")
@@ -27,12 +28,12 @@ for repl in llc_repl:
         os.system("./config.sh my_config.json")
         os.system("make")
         for i, trace in enumerate(TRACES):
-            os.system(f"bin/champsim -warmup_instructions {iter} -simulation_instructions {iter} gap_traces/{trace} > results/llc_set_ways/{trace[:-3]}_{set}.txt")
+            os.system(f"bin/champsim -warmup_instructions {iter} -simulation_instructions {iter} gap_traces/{trace} > results/llc_set_ways/{trace[:-3]}_{repl}_{set}.txt")
 
-            llc_info = os.popen(f'grep "LLC TOTAL" results/llc_set_ways/{trace[:-3]}_{set}.txt').read().split()
+            llc_info = os.popen(f'grep "LLC TOTAL" results/llc_set_ways/{trace[:-3]}_{repl}_{set}.txt').read().split()
             llc_hit = int(llc_info[5])/int(llc_info[3])
 
-            ipc = os.popen(f'grep "CPU 0 cumulative IPC" results/llc_set_ways/{trace[:-3]}_{set}.txt').read().split()[4]
+            ipc = os.popen(f'grep "CPU 0 cumulative IPC" results/llc_set_ways/{trace[:-3]}_{repl}_{set}.txt').read().split()[4]
 
             out_file.write(f"{trace[:-3]},{repl},{set},{ipc},{llc_hit}\n")
             # data[0][j][i] = ipc
