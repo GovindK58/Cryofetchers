@@ -49,7 +49,7 @@ for i in range(len(TRACES)):
 
     plt.xticks(ind+ width*(len(llc_repl) - 1) /2 , llc_repl)
     plt.legend()
-    plt.title("Effect on IPC with different LLC replacement policies")
+    plt.title("Effect on IPC with different LLC sizes")
     # plt.show()
     plt.savefig(f"results/llc_set_size/pics/{TRACES[i][:-3]}_ipc.png")
     plt.close()
@@ -59,7 +59,7 @@ for i in range(len(TRACES)):
 
     plt.xticks(ind + width*(len(llc_repl) - 1) /2 , llc_repl)
     plt.legend()
-    plt.title("Effect on hit rate with different LLC replacement policies")
+    plt.title("Effect on hit rate with different LLC sizes")
     # plt.show()
     plt.savefig(f"results/llc_set_size/pics/{TRACES[i][:-3]}_hit.png")
     plt.close()
