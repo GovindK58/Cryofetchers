@@ -19,8 +19,8 @@ clean:
 	 find . -name \*.d -delete
 	 $(RM) -r obj
 
-	 find replacement/gippr -name \*.o -delete
-	 find replacement/gippr -name \*.d -delete
+	 find replacement/lfu -name \*.o -delete
+	 find replacement/lfu -name \*.d -delete
 	 find prefetcher/no -name \*.o -delete
 	 find prefetcher/no -name \*.d -delete
 	 find replacement/lru -name \*.o -delete
@@ -32,13 +32,13 @@ clean:
 	 find btb/basic_btb -name \*.o -delete
 	 find btb/basic_btb -name \*.d -delete
 
-bin/champsim: $(patsubst %.cc,%.o,$(wildcard src/*.cc)) obj/repl_rreplacementDgippr.a obj/pref_pprefetcherDno.a obj/repl_rreplacementDlru.a obj/pref_pprefetcherDno_instr.a obj/bpred_bbranchDbimodal.a obj/btb_bbtbDbasic_btb.a
+bin/champsim: $(patsubst %.cc,%.o,$(wildcard src/*.cc)) obj/repl_rreplacementDlfu.a obj/pref_pprefetcherDno.a obj/repl_rreplacementDlru.a obj/pref_pprefetcherDno_instr.a obj/bpred_bbranchDbimodal.a obj/btb_bbtbDbasic_btb.a
 	$(CXX) $(LDFLAGS) -o $@ $^ $(LDLIBS)
 
-replacement/gippr/%.o: CFLAGS += -Ireplacement/gippr
-replacement/gippr/%.o: CXXFLAGS += -Ireplacement/gippr
-replacement/gippr/%.o: CXXFLAGS +=  -Dinitialize_replacement=repl_rreplacementDgippr_initialize -Dfind_victim=repl_rreplacementDgippr_victim -Dupdate_replacement_state=repl_rreplacementDgippr_update -Dreplacement_final_stats=repl_rreplacementDgippr_final_stats
-obj/repl_rreplacementDgippr.a: $(patsubst %.cc,%.o,$(wildcard replacement/gippr/*.cc)) $(patsubst %.c,%.o,$(wildcard replacement/gippr/*.c))
+replacement/lfu/%.o: CFLAGS += -Ireplacement/lfu
+replacement/lfu/%.o: CXXFLAGS += -Ireplacement/lfu
+replacement/lfu/%.o: CXXFLAGS +=  -Dinitialize_replacement=repl_rreplacementDlfu_initialize -Dfind_victim=repl_rreplacementDlfu_victim -Dupdate_replacement_state=repl_rreplacementDlfu_update -Dreplacement_final_stats=repl_rreplacementDlfu_final_stats
+obj/repl_rreplacementDlfu.a: $(patsubst %.cc,%.o,$(wildcard replacement/lfu/*.cc)) $(patsubst %.c,%.o,$(wildcard replacement/lfu/*.c))
 	@mkdir -p $(dir $@)
 	ar -rcs $@ $^
 
@@ -78,7 +78,7 @@ obj/btb_bbtbDbasic_btb.a: $(patsubst %.cc,%.o,$(wildcard btb/basic_btb/*.cc)) $(
 	ar -rcs $@ $^
 
 -include $(wildcard src/*.d)
--include $(wildcard replacement/gippr/*.d)
+-include $(wildcard replacement/lfu/*.d)
 -include $(wildcard prefetcher/no/*.d)
 -include $(wildcard replacement/lru/*.d)
 -include $(wildcard prefetcher/no_instr/*.d)
