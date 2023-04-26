@@ -10,7 +10,7 @@ to_run = int(sys.argv[1])
 NUM_INSTR = 30000000
 
 
-cache_policy = ["inclusive" ,"non_inclusive"]
+cache_policy = ["inclusive" ,"non_inclusive", "exclusive"]
 llc_repl = ["lru", "lip", "eaf", "gippr", "random", "fifo", "drrip", "srrip", "ship", "hawkeye", "lfu"]
 
 result_dir = "results/inc_exc"
@@ -68,7 +68,7 @@ for i in range(len(TRACES)):
         plt.bar(ind + width*k, data[0][i, :, k], width, label=cache_policy[k])
 
     plt.xticks(ind+ width*(len(llc_repl) - 1) /2 , llc_repl)
-    plt.legend()
+    plt.legend(loc = 'lower right')
     plt.title("Effect on IPC with different LLC replacement policies")
     # plt.show()
     plt.savefig(f"{result_dir}/pics/{TRACES[i][:-3]}_ipc.png")
@@ -78,7 +78,7 @@ for i in range(len(TRACES)):
         plt.bar(ind + width*k, data[1][i, :, k], width, label=cache_policy[k])
 
     plt.xticks(ind + width*(len(llc_repl) - 1) /2 , llc_repl)
-    plt.legend()
+    plt.legend(loc = 'lower right')
     plt.title("Effect on hit rate with different LLC replacement policies")
     # plt.show()
     plt.savefig(f"{result_dir}/pics/{TRACES[i][:-3]}_hit.png")
@@ -89,7 +89,7 @@ for i in range(len(TRACES)):
         plt.bar(ind + width*k, data[2][i, :, k], width, label=cache_policy[k])
 
     plt.xticks(ind + width*(len(llc_repl) - 1) /2 , llc_repl)
-    plt.legend()
+    plt.legend(loc = 'lower right')
     plt.title("Effect on MPKI with different LLC replacement policies")
     # plt.show()
     plt.savefig(f"{result_dir}/pics/{TRACES[i][:-3]}_mpki.png")
