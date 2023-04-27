@@ -1,15 +1,46 @@
 # Cryofetchers
 
-The repo contains analysis of different cache hierarchies and cache replacement policies, insights and improvements. 
-We are using champsim to run simulations. 
-
-The traces can be downloaded from https://utexas.app.box.com/s/2k54kp8zvrqdfaa8cdhfquvcxwh7yn85/folder/132804598561
+## By Ankan Sarkar(210050013), Govind Kumar(210050058), Yash Virani(210050170)
 
 
-References:
+The repo contains analysis of different cache hierarchies and cache replacement policies and various insights. \
+We are using the latest repo of ChampSim to run simulations. \
+We have implemented all the inclusion policies - inclusive, exclusive and non-inclusive. 
+
+All the replacement poicies implemented by us can be found in the replacement folder. They are:
+- hawkeye, lip, eaf, lfu, lru, random, drrip, fifo, gippr, srrip, ship
+
+To implement the inclusive and exclusive policy, we made some extra class avriables to account for the data needed in order to implement the policy.
+
+To run a particular simulation with a particular cache inclusion policy use:
+```
+$ cp <inclusion policy>.cc src/cache.cc
+$ ./config.sh <configuration file>
+$ make
+$ bin/champsim --warmup_instructions 10000000 --simulation_instructions 10000000 <trace_file>
+```
+
+We have made several scripts to automate the data generation and plotting
+- `run_sim.py`
+- `test_l1_size.py`
+- `test_l2_size.py`
+- `test_set_way.py`; `set_way_plots.py`
+- `cache_size.py`; `size_plots.py`
+
+All these above scripts demand a parameter `1` or `0` to denote wheteher to run and plot or only collect the data.
+
+The data generated is stored in the results folder. We are storing the extracted data in csv files. 
+
+## Observations
+
+Our observations are stored in `observations.txt`
+
+
+The traces used can be downloaded from https://utexas.app.box.com/s/2k54kp8zvrqdfaa8cdhfquvcxwh7yn85/folder/132804598561
+
+
+References used by us:
 - https://seal.ece.ucsb.edu/sites/default/files/publications/hpca-2019-abanti.pdf
-- https://cs.stanford.edu/~matei/papers/2017/bigdata_making_caches_work.pdf
-- https://par.nsf.gov/servlets/purl/10080635
 - https://core.ac.uk/download/pdf/147122148.pdf
 
 

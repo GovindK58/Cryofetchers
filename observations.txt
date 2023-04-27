@@ -1,0 +1,44 @@
+Major points:
+
+    L1 & L2
+
+        In L1, size doesn't matter at all, as we can see the change in IPC is negligible even on changing the size eight folds.
+        In L2, things start to differ, here the change in IPC is trace dependent. For bfs slope is flat while for cc we observe a steep slope.
+        L2 is significantly larger and hence can potentially store useful data
+
+    set/way of LLC
+
+        Keeping the LLC size constant at 2 MB, we change the associativity from a default 16 to 1, 4 and 64 as well. Observations:
+
+        (1) In bfs, IPC remains roughly the same, but in cc, we observe a steady increase on increasing num_way. A plausible reason could be that since cc's algorithm utilizes dfs. In dfs, a node is visited atmost twice via backtracking, so if number of sets are high, we are mostly filling useless data into it, reducing the effectivity altogether.
+
+        (2) Hit rate roughly follows the same order as IPC.
+
+    size of LLC 
+
+        Now, we change the overall LLC size by varying num_set keeping num_way constant. Observations:
+
+        (1) Pretty obviously as size increases both IPc and hit rate must increase. This trend is followed by all but hawkeye replacement policy.
+
+        (2) For bfs, we see a sudden spike in IPC at 32 MB implying the fact that the application becomes cache-friendly at that range. For cc, the result is such that the slope of increase in IPC is steady till 8 MB, beyond which there is hardly any change. This implies the application becomes cache thrashing at ranges higher than 8 MB.
+
+    inclusive/exclusive 
+
+        Non-inclusive and inclusive policy performs almosty the same. But exclusive performs significantly worse than the others.
+        
+
+    replacement policies 
+    
+        Lastly, we turn ourselved to the various replacement policies. The best replacement policies were:
+
+        (1) hawkeye - Inspired by belady's policy. It tries to predict the future and puts those addresses in its auxilliary data structures. To provide a reason as to why hawkeye behaves differently than other caches on changing the LLC size can be explained by the fact that its aux data structures are of the size of the cache itself. Higher cache size implies more space to store useful stuff other than the cache. So acc to champsim, we get a cache miss but reality is quite the different.  Disadvantages being the huge overhead it incurs in storing the addresses, since it requires large amt of data to predict future, it gives good results only when num_instr is high.
+        
+        (2) lip - Based on lru, here on a cache miss, we bring the entry to the LRU position rather than the MRU. On subsequent hits, we bring it to the MRU position. This helps in not filling the cache with addresses visited only once or twice.
+
+        (3) lfu - Results found are very very similar to lip due to striking resemblances in update policies. Here too, on a cache miss, things are brought up with frequency 0, eventually making it the most vulnerable position to be victimised.
+
+        (4) eaf - Probabilistic policy inpired by lru. Here, we keep a queue of recently evicted addresses. On a miss, we check the queue, if its present there, we bring the address to MRU. Otherwise, we bring it to the LRU position with some probability. Appropriately tuning the probability can make this even better than hawkeye! But failing to do so might make it worse than LRU.
+
+        (5) srrip/drrip/ship - Inbuilt policies, which try to predict the expected correlation within when a particular address should be reused.
+
+        (6) gippr - Again a policy inspired by lru. It divided a set into two parts based on lru values. For the lesser lru part, we dont bring the address to MRU upon hit. For the greater lru part, we bring it to the front quarter of the cache with uniform probability. The idea being that if a line is already in the first half, no point in bringing it to the front leading to unnecessary latency due to shifting.
